@@ -29,12 +29,8 @@ const rotate = (position, turnDirection) => {
     } else if (newOrientation < 0) {
         newOrientation = 3;
     }
-    // TODO: use Object.assign?
-    return {
-        x: position.x,
-        y: position.y,
-        orientation: newOrientation
-    };
+
+    return Object.assign({}, position, { orientation: newOrientation });// TODO: use Object.assign?
 };
 
 const move = (position, distance) => {
@@ -43,43 +39,77 @@ const move = (position, distance) => {
 
     switch (position.orientation) {
         case directions.north:
-            yDiff = distance;
+            yDiff = 1;
             break;
         case directions.east:
-            xDiff = distance;
+            xDiff = 1;
             break;
         case directions.south:
-            yDiff = -distance;
+            yDiff = -1;
             break;
         case directions.west:
-            xDiff = -distance;
+            xDiff = -1;
             break;
     }
 
-    return {
-        x: position.x + xDiff,
-        y: position.y + yDiff,
-        orientation: position.orientation
-    };
+    const pathTaken = [];
+    for (let i = 1; i <= distance; i++) {
+        pathTaken.push({
+            x: position.x + (xDiff * i),
+            y: position.y + (yDiff * i)
+        });
+    }
+
+    return Object.assign({}, position, {
+        x: position.x + (xDiff * distance),
+        y: position.y + (yDiff * distance),
+        path: position.path.concat(pathTaken)
+    });
 };
 
 function DistanceCalculator() { };
 
-DistanceCalculator.prototype.shortestDistance = instructions => {
-    if (instructions.length === 0) {
-        return 0;
+const firstLocationVisitedTwice = (locations) => {
+
+    const visitedLocations = new Set();
+    for (let i = 0; i < locations.length; i++) {
+        const location = locations[i];
+        const locationKey = `${location.x},${location.y}`;
+
+        if (visitedLocations.has(locationKey)) {
+            return location;
+        }
+
+        visitedLocations.add(locationKey);
     }
+};
+
+const followInstructions = (instructions) => {
     const startingPosition = {
         x: 0,
         y: 0,
-        orientation: directions.north
+        orientation: directions.north,
+        path: [{ x: 0, y: 0 }]
     };
 
-    const finalPosition = instructions.reduce((previousPosition, instruction) => {
+    return instructions.reduce((previousPosition, instruction) => {
         const rotatedPosition = rotate(previousPosition, instruction.direction);
         return move(rotatedPosition, instruction.distance);
     }, startingPosition);
+};
+
+DistanceCalculator.prototype.shortestDistance = instructions => {
+    const finalPosition = followInstructions(instructions);
+
     return Math.abs(finalPosition.x) + Math.abs(finalPosition.y);
+};
+
+DistanceCalculator.prototype.shortestDistanceToFirstIntersection = instructions => {
+    const finalPosition = followInstructions(instructions);
+
+    const visitedTwice = firstLocationVisitedTwice(finalPosition.path);
+
+    return Math.abs(visitedTwice.x) + Math.abs(visitedTwice.y);
 };
 
 module.exports = {
