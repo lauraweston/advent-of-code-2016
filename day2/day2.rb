@@ -1,15 +1,24 @@
 class BathroomCodeCalculator
-  STARTING_DIGIT = 5
+  STARTING_POSITION = {
+    x: 1,
+    y: 1
+  }
+
+  KEYPAD = [
+    [1,2,3],
+    [4,5,6],
+    [7,8,9]
+  ]
 
   def initialize(input)
     @input = input
+    @current_position = STARTING_POSITION.dup
   end
 
   def calculate
     parse
-    current_digit = STARTING_DIGIT
     code = instructions.map do |instruction|
-      current_digit = single_digit_calculator(current_digit, instruction)
+      single_digit_calculator(instruction)
     end
     code.join("").to_i
   end
@@ -18,36 +27,35 @@ class BathroomCodeCalculator
     @instructions = input.split("\n")
   end
 
-  def single_digit_calculator(starting_digit, instruction)
+  def single_digit_calculator(instruction)
     path = instruction.split("")
-    current_digit = starting_digit
+    code_position = current_position
     path.each do |letter|
       case letter
       when "U"
-        onTopRow = current_digit < 4
-        if !onTopRow
-          current_digit -= 3
+        if code_position[:y] > 0
+          code_position[:y] -= 1
         end
       when "D"
-        onBottomRow = current_digit > 6
-        if !onBottomRow
-          current_digit += 3
+        if code_position[:y] < 2
+          code_position[:y] += 1
         end
       when "L"
-        onLeftSide = current_digit == 1 || current_digit == 4 || current_digit == 7
-        if !onLeftSide
-          current_digit -= 1
+        if code_position[:x] > 0
+          code_position[:x] -= 1
         end
       when "R"
-        onRightSide = current_digit == 3 || current_digit == 6 || current_digit == 9
-        if !onRightSide
-          current_digit += 1
+        if code_position[:x] < 2
+          code_position[:x] += 1
         end
       end
     end
-    current_digit
+    @current_position = code_position
+    x = code_position[:x]
+    y = code_position[:y]
+    KEYPAD[y][x]
   end
 
   private
-  attr_reader :input, :instructions, :current_digit
+  attr_reader :input, :instructions, :current_position
 end

@@ -25,14 +25,13 @@ describe BathroomCodeCalculator do
       ["UUD", 5]
     ]
     test_cases.each do |test_case|
-      it "converts instructions to a digit correctly" do
+      it "converts #{test_case.first} to a digit correctly" do
         calculator = BathroomCodeCalculator.new(test_case.first)
-        starting_digit = 5
-        expect(calculator.single_digit_calculator(starting_digit, test_case.first)).to eq(test_case.last)
+        expect(calculator.single_digit_calculator(test_case.first)).to eq(test_case.last)
       end
     end
   end
-  
+
   describe "correctly calculates the four digit code, given a set of instructions" do
     test_cases = [
       ["U\nL", 21],
