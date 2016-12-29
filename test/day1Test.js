@@ -6,8 +6,8 @@ const assert = require("assert");
 describe("directions parser", () => {
     const testCases = [
         ["", []],
-        ["R1", [{ direction: 'R', distance: 1 }]],
-        ["R1, L3", [{ direction: 'R', distance: 1 }, { direction: 'L', distance: 3 }]]
+        ["R1", [{ direction: "R", distance: 1 }]],
+        ["R1, L3", [{ direction: "R", distance: 1 }, { direction: "L", distance: 3 }]]
     ];
     testCases.forEach(tc => {
         it("splits the input into an array of instructions", () => {
@@ -22,9 +22,9 @@ describe("directions parser", () => {
 describe("distance calculator", () => {
     const testCases = [
         [[], 0],
-        [[{ direction: 'R', distance: 1 }], 1],
-        [[{ direction: 'R', distance: 1 }, { direction: 'R', distance: 2 }], 3],
-        [[{ direction: 'R', distance: 2 }, { direction: 'L', distance: 3 }], 5]
+        [[{ direction: "R", distance: 1 }], 1],
+        [[{ direction: "R", distance: 1 }, { direction: "R", distance: 2 }], 3],
+        [[{ direction: "R", distance: 2 }, { direction: "L", distance: 3 }], 5]
     ];
 
     testCases.forEach(tc => {

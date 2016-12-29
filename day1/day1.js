@@ -115,4 +115,4 @@ DistanceCalculator.prototype.shortestDistanceToFirstIntersection = instructions 
 module.exports = {
     Parser,
     DistanceCalculator
-}
+};
