@@ -32,13 +32,11 @@ function transformSetOfThreeTriangleSides(setOfThreeTriangleSides) {
 }
 
 function splitSidesIntoSetsOfThree(sides) {
-    const transformedTriangles = [];
+    let transformedTriangles = [];
     while (sides.length > 2) {
-        let setOfThreeTriangleSides = sides.splice(0, 3);
-        transformSetOfThreeTriangleSides(setOfThreeTriangleSides)
-            .forEach(triangle => {
-                transformedTriangles.push(triangle);
-            });
+        const setOfThreeTriangleSides = sides.splice(0, 3);
+        const transformedSetOfThree = transformSetOfThreeTriangleSides(setOfThreeTriangleSides);
+        transformedTriangles = transformedTriangles.concat(transformedSetOfThree);
     }
     return transformedTriangles;
 }
